@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="card invoices-tabs-card">
+            <div class="card-body card-body pt-0 pb-0">
+                <div class="invoices-items-main-tabs">
+                    <div class="row align-items-center">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="invoices-items-tabs">
+                                <ul>
+                                    <li><a href="invoice-items.html" class="active">All Items</a></li>
+                                    <!-- <li><a href="invoice-category.html">Category</a></li> -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card invoices-tabs-card">
+            <div class="card-body card-body pt-0 pb-0">
+                <div class="invoices-main-tabs border-0 pb-0">
+                    <div class="row align-items-center">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="invoices-settings-btn invoices-settings-btn-one">
+                                <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#add_items">
+                                    <i data-feather="plus-circle"></i> Add New Item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-stripped table-hover datatable">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for items in  all_items %}
+                                    <tr>
+                                        <td>
+                                           {{items.description}}
+                                        </td>
+                                        <td class="items-text">{{items.aditional_details}}</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'invoice:edit_items' items.id %}"
+                                                class="btn btn-sm btn-white text-success me-2"><i
+                                                    class="far fa-edit me-1"></i> Edit</a>
+                                            <a class="btn btn-sm btn-white text-danger" onclick="deleteItem({{items.id}})" ></i>Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal custom-modal fade bank-details" id="add_items" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <div class="form-header text-start mb-0">
+                        <h4 class="mb-0">Add New Item</h4>
+                    </div>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="bank-inner-details">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label>Item Name</label>
+                                    <input type="text" class="form-control" required placeholder="Add New Item" name="name">
+                                </div>
+                            </div>
+                            <!-- <div class="col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label>Price Per unit</label>
+                                    <input type="number" class="form-control" required placeholder="₹" name="price" >
+                                </div>
+                            </div> -->
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label>Aditional_details   </label>
+                                    <textarea class="form-control" required placeholder="Add item description" name="aditional_details"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label>Taxable </label>
+                                    <label class="custom_check">
+                                        <input type="checkbox" name="taxable">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="bank-details-btn">
+                        <a href="javascript:void(0);" data-bs-dismiss="modal"
+                            class="btn bank-cancel-btn me-2">Cancel</a>
+                        <button type="submit" class="btn bank-save-btn">Save Item</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    function deleteItem(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url : "/deleteitems/",
+                    type : "POST",
+                    data : {
+                        'id': id,
+                    },
+                    success : function(response){
+                        Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        )
+                        setTimeout(function () {
+                        location.reload();
+                        },1000);
+                    }
+                    
+                })
+            }
+        })
+    }
+    
+</script>
+
+
+
+
+{% endblock %}

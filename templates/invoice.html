@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="page-wrapper" >
+    <div class="content container-fluid">
+        <!-- page-header invoices-page-header -->
+        <!-- row align-items-center -->
+        <div class="row">
+            <!-- <div class="">
+                <div class="col mb-5">
+                    <ul class="breadcrumb invoices-breadcrumb">
+                        <li class="breadcrumb-item invoices-breadcrumb-item">
+                            <a href="invoices.html">
+                                <i class="fe fe-chevron-left"></i> Back to Invoice List
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-auto">
+                    <div class="invoices-create-btn">
+                        <a class="invoices-preview-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#invoices_preview"><i class="fe fe-eye"></i> Preview</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#delete_invoices_details"
+                            class="btn delete-invoice-btn">
+                            Delete Invoice
+                        </a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#save_invocies_details"
+                            class="btn save-invoice-btn">
+                            Save Draft
+                        </a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card invoices-add-card">
+                    <div class="card-body">
+                        <div class="invoices-main-form">
+                            <div class="row">
+                                <div class="col-xl-4 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Customer Number</label>
+                                        <input type="text" class="form-control" onchange="chengingName()" id="customerphone" name="checkname" list="customer">
+                                        <datalist id="customer">
+                                            {% for cust in customers %}
+                                            <option value="{{cust.phone}}">{{cust.phone}}</option>
+                                            {% endfor %}
+                                        </datalist> 
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" readonly id="customername"> 
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Invoice Number</label>
+                                        <input type="text" class="form-control" id="invoicenumber" value="{{invoice_id}}" readonly name="invoicenumber" >
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6 col-sm-12 col-12">
+                                    <div class="form-group">
+                                        <label>Date</label>
+                                        <input type="date" class="form-control" id="invoicedate" name="date" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="invoice-item">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-md-6">
+                                    <div class="invoice-info">
+                                        <strong class="customer-text">Invoice From </strong>
+                                        <p class="invoice-details invoice-details-two">
+                                            {{admin_details.name}}<br>
+                                            {{admin_details.address}}, {{admin_details.district}}, {{admin_details.state }}<br>
+                                            pin: {{admin_details.pincode}}<br>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6">
+                                    <div class="invoice-info">
+                                        <strong class="customer-text">Invoice To</strong>
+                                        <p class="invoice-details invoice-details-two">
+                                            <span id="customernname"></span> <br>
+                                            <span id="customeraddress"></span>   <span id="customercity"></span>  <br>
+                                            <span id="customercountry"></span>    <span id="customerzipcode"></span> <br>
+                                            <span id="customeremail"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="invoice-add-table">
+                            <h4>Item Details</h4>
+                            <div class="table-responsive">
+                                <table class="table table-center add-table-items">
+                                    <thead>
+                                        <tr><th>sl no</th>
+                                            <th>Items</th>
+                                            <!-- <th>Quantity</th> -->
+                                            <th>Amount</th>
+                                            <th>Tax</th>
+                                            <th>Total</th>
+                                            <!-- <th>Tax</th> -->
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="add-row">
+                                            <td>1</td>
+                                            <td>
+                                                <input type="text" class="form-control" onchange="ProductSearch(1)" id="itemname1" list="items">
+                                                <datalist id="items">
+                                                    {% for item in items %}
+                                                    <option value="{{item.description}}">{{item.description}}</option>
+                                                    {% endfor %}
+                                                </datalist> 
+                                            </td>
+                                            <!-- <td>
+                                                <input type="number" id="qty1" onchange="qtyChange(1)" class="form-control">
+                                            </td> -->
+                                            <td>
+                                                <input type="number" onchange="qtyChange(1)" id="itemprice1" class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="number" readonly    id="itemtotal1" class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="number" readonly id="itemtaxtotal1" class="form-control">
+                                            </td>
+                                            <input type="text" id="checkvalue1" hidden>
+                                            <!-- <td>
+                                                
+                                                <label class="custom_check">
+                                                    <input type="checkbox" id="check1" name="taxable">
+                                                    
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </td> -->
+                                            <td class="add-remove text-end">
+                                                <a href="javascript:void(0);" class="add-btn me-2"><i
+                                                        class="fas fa-plus-circle"></i></a>
+                                                <a href="javascript:void(0);" onclick="DeleteRow(1)" class="remove-btn"><i
+                                                        class="fe fe-trash-2"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-6">
+                                <div class="invoice-fields">
+                                    <h4 class="field-title">More Fields</h4>
+                                </div>
+                                <div class="invoice-faq">
+                                    <div class="panel-group" id="accordion" role="tablist"
+                                        aria-multiselectable="true">
+                                        <!-- -->
+                                        <div class="faq-tab">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading" role="tab" id="headingThree">
+                                                    <p class="panel-title">
+                                                        <a class="collapsed" data-bs-toggle="collapse"
+                                                            data-bs-parent="#accordion"
+                                                            href="#collapseThree" aria-expanded="false"
+                                                            aria-controls="collapseThree">
+                                                            <i class="fas fa-plus-circle me-1"></i> Add
+                                                            Notes
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                                <div id="collapseThree" class="panel-collapse collapse"
+                                                    role="tabpanel" aria-labelledby="headingThree"
+                                                    data-bs-parent="#accordion">
+                                                    <div class="panel-body">
+                                                        <textarea class="form-control" id="notes"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-6">
+                                <div class="invoice-total-card">
+                                    <h4 class="invoice-total-title">Summary</h4>
+                                    <div class="invoice-total-box">
+                                        <div class="invoice-total-inner">
+                                            <p>Sub total <span id="subtotall">0</span></p>
+                                            <p>Taxable <span id="subtax">0</span></p>
+                                            <!-- <p>Round Off
+                                                <input type="checkbox" id="status_1" class="check">
+                                                <label for="status_1" class="checktoggle">checkbox</label>
+                                                <span>$54</span>
+                                            </p> -->
+                                            <div class="links-info-one">
+                                                <div class="links-info">
+                                                    <div class="links-cont">
+                                                        <a href="#" class="service-trash">
+                                                            <i class="feather-trash-2"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- additional charge -->
+                                        </div>
+                                        <div class="invoice-total-footer">
+                                            <h4>Total Amount: <span id="gtotal">0</span></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="upload-sign">
+                                    <div class="form-group float-end mb-0">
+                                        <button class="btn btn-primary" onclick="generatebill()">Save Invoice</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal custom-modal fade bank-details" id="bank_details" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="form-header text-start mb-0">
+                    <h4 class="mb-0">Add Bank Details</h4>
+                </div>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bank-inner-details">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label>Account Holder Name</label>
+                                <input type="text" class="form-control" placeholder="Add Name">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label>Bank name</label>
+                                <input type="text" class="form-control" placeholder="Add Bank name">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label>IFSC Code</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="bank-details-btn">
+                    <a href="javascript:void(0);" data-bs-dismiss="modal"
+                        class="btn bank-cancel-btn me-2">Cancel</a>
+                    <a href="javascript:void(0);" class="btn bank-save-btn">Save Item</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal custom-modal fade" id="delete_invoices_details" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Invoice Details</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="javascript:void(0);" data-bs-dismiss="modal"
+                                class="btn btn-primary paid-continue-btn">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="javascript:void(0);" data-bs-dismiss="modal"
+                                class="btn btn-primary paid-cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal custom-modal fade" id="save_invocies_details" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Save Invoice Details</h3>
+                    <p>Are you sure want to save?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="javascript:void(0);" data-bs-dismiss="modal"
+                                class="btn btn-primary paid-continue-btn">Save</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="javascript:void(0);" data-bs-dismiss="modal"
+                                class="btn btn-primary paid-cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function chengingName() {
+        $.ajax({
+                url : "/customersearch/",
+                type : "POST",
+                data : {
+                    'customerphone': $('#customerphone').val()
+                },
+                success : function(response){
+                    $('#customername').val(response.name)
+                    $('#customernname').html(response.name)
+                    $('#customeraddress').html(response.address,)
+                    $('#customercity').html(response.city,)
+                    $('#customercountry').html(response.customercountry )
+                    $('#customerzipcode').html(response.zipcode)
+                    $('#customeremail').html(response.email)
+                }
+            })
+    }
+
+    function ProductSearch(id){
+        $.ajax({
+            url : "/productsearch/",
+            type : "POST",
+            data : {
+                'product': $("#itemname" + id).val()
+            },
+            success : function(response){
+                // alert(response.taxable)
+                if (response.productexists == "itemexits") {
+                    $('#itemprice' + id).val(response.rate)
+                    if (response.taxable == true ){
+                        // $('#check' + id).attr('checked', true)
+                        $('#checkvalue' + id).val("Taxable")
+                    }
+                    else {
+                        $('#checkvalue' + id).val("NonTaxable")
+                    }
+                }
+                else {
+                    alert("Product Does not Exits")
+                }
+            }
+        })
+    }
+
+    function qtyChange(id) {
+        
+        var total = 0
+        var item_taxTotal = 0
+        var Available_rowCount = $(".add-table-items tr ").length;
+        // var qty = $("#qty"+id).val()
+        var taxable = $("#checkvalue"+id).val()
+        var tax = $("#check" +id).val()
+        var itemprice = $("#itemprice"+id).val()
+        // var check = $("#check"+id).val()
+        var subtotal = 0
+        var sum = 0
+        total = parseInt(itemprice)
+        if (taxable == "Taxable"){
+            tax = (total *18)/100
+            item_taxTotal = total + tax
+        }
+        else {
+            tax = 0
+            item_taxTotal = total
+        }
+        $("#itemtotal" +id ).val(tax)
+        $("#itemtaxtotal" +id ).val(item_taxTotal)
+        for(var i=1;i<Available_rowCount;i++){
+            subtotal += parseInt($("#itemprice"+i).val())
+            sum+=parseInt($('#itemtaxtotal'+i).val())
+        }
+        taxamount = sum - subtotal
+        $("#subtotall").html(subtotal)
+        $("#subtax").html(taxamount)
+        $("#gtotal").html(sum)
+
+    }
+
+    // delete row 
+
+    function DeleteRow(id){
+        var completeTotal = 0
+        var tax_onlyamount = 0
+        var amount = parseInt($("#itemprice" + id).val())
+        var tax = parseInt($("#itemtotal" + id).val())
+        var total = $("#subtotall" ).html()
+        var subtax = $("#subtax").html()
+        var gtotal = $("#gtotal").html()
+
+        var amount_tax = amount + tax
+        sub_total = parseInt(total) - amount
+        sub_tax = parseInt(subtax) - tax
+        completeTotal = parseInt(gtotal) - amount_tax
+
+        $("#subtotall").html(sub_total)
+        $("#subtax").html(sub_tax)
+        $("#gtotal").html(completeTotal)
+
+        }
+
+    // invoice generation
+
+    function generatebill() {
+        data = []
+        var totalrowCount = $(".add-table-items tr ").length;
+        primarydatas = {
+            "customerphone":$("#customerphone").val(),
+            "invoicenumber":$("#invoicenumber").val(),
+            "invoicedate":$("#invoicedate").val(),
+            "subtotall":$("#subtotall").html(),
+            "gtotal":$("#gtotal").html(),
+            "note":$("#notes").val(),
+            "tax":$("#subtax").html(),
+        }
+        data.push(primarydatas)
+        for (var i = 1; i < totalrowCount; i++) {
+            var items = {
+                'itemname': $("#itemname" + i ).val(),
+                'itemprice':$("#itemprice" +i).val(),
+                'itemtotal':$("#itemtotal" + i).val(),
+                'itemtaxtotal':$("#itemtaxtotal" + i).val(),
+                // 'checkvalue':$("#checkvalue" +i).val()
+            }
+            data.push(items)
+        }
+        dt = { 'data': data },
+            dt['data'] = JSON.stringify(dt['data']),
+            
+            $.ajax({
+                url: "saveinvoice/",
+                type: "POST",
+                data: dt,
+                success: function (response) {
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'success',
+                        title: response.msg,
+                        showConfirmButton: false,
+                        timer: 6000
+                    });0
+                    setTimeout(function () {
+                        location.reload();
+                        },1000);
+                    }
+            })
+    }
+
+
+</script>
+
+{% endblock %}
